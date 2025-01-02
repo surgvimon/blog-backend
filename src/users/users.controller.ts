@@ -1,19 +1,24 @@
 import {
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Body,
+  Headers,
+  Ip,
   ParseIntPipe,
   DefaultValuePipe,
+  ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
 import { PatchUserDto } from './dtos/patch-user.dto';
 import { UsersService } from './providers/users.service';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiQuery, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 @ApiTags('Users')
@@ -25,26 +30,26 @@ export class UsersController {
 
   @Get('/:id?')
   @ApiOperation({
-    summary: 'Fetches a list of registered users on the application.'
+    summary: 'Fetches a list of registered users on the application',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Users fetched successfully based on the query',
   })
   @ApiQuery({
     name: 'limit',
     type: 'number',
-    description: 'The upper limit of pages you want the pagination to return',
     required: false,
+    description: 'The number of entries returned per query',
     example: 10,
   })
   @ApiQuery({
     name: 'page',
     type: 'number',
+    required: false,
     description:
       'The position of the page number that you want the API to return',
-    required: false,
     example: 1,
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'Users fetched successfully based on the query',
   })
   public getUsers(
     @Param() getUserParamDto: GetUsersParamDto,
@@ -52,7 +57,7 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
   ) {
     return this.usersService.findAll(getUserParamDto, limit, page);
-  } 
+  }
 
   @Post()
   public createUsers(@Body() createUserDto: CreateUserDto) {

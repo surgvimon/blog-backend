@@ -1,26 +1,19 @@
-import { AuthService } from 'src/auth/providers/auth.service';
 import { GetUsersParamDto } from '../dtos/get-users-param.dto';
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
+/**
+ * Controller class for '/users' API endpoint
+ */
 @Injectable()
 export class UsersService {
-  constructor(
-    // Injecting Auth Service
-    @Inject(forwardRef(() => AuthService))
-    private readonly authService: AuthService,
-  ) {}
-
-  /*
-   * Method to find all the users
+  /**
+   * Public method responsible for handling GET request for '/users' endpoint
    */
   public findAll(
     getUserParamDto: GetUsersParamDto,
     limt: number,
     page: number,
   ) {
-    const isAuth = this.authService.isAuth();
-    console.log(isAuth);
-
     return [
       {
         firstName: 'John',
@@ -33,8 +26,8 @@ export class UsersService {
     ];
   }
 
-  /*
-   * Find a user by ID
+  /**
+   * Public method used to find one user using the ID of the user
    */
   public findOneById(id: string) {
     return {
