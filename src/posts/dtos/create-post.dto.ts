@@ -15,7 +15,7 @@ import {
 import { Type } from 'class-transformer';
 import { postStatus } from '../enums/post-status.enum';
 import { PostType } from "../enums/postType.enum";
-import { CreatePostMetaOptionsDto } from './create-post-meta-options.dto';
+import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreatePostDto {

@@ -10,7 +10,6 @@ import { User } from './user.entity';
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],
-  // imports: [forwardRef(() => AuthModule)],
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), forwardRef(() => AuthModule)],
 })
 export class UsersModule {}
