@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/providers/users.service';
 import { Post } from '../post.entity';
@@ -30,27 +30,11 @@ export class PostsService {
   /**
    * Method to create a new post
    */
-  public async create(createPostDto: CreatePostDto) {
-     // Create the metaOptions first if they exist __  let
-     let metaOptions = createPostDto.metaOptions
-     ? this.metaOptionsRepository.create(createPostDto.metaOptions)
-     : null;
+  public async create(@Body() createPostDto: CreatePostDto) {
+    // Create the post
+    let post = this.postsRepository.create(createPostDto);
 
-   if (metaOptions) {
-     await this.metaOptionsRepository.save(metaOptions);
-   }
-    
-   // Create the post
-   let post = this.postsRepository.create({
-    ...createPostDto,
-  });
-
-  // If meta options exist add them to post
-  if (metaOptions) {
-    post.metaOptions = metaOptions;
-  }
-
-  return await this.postsRepository.save(post);
+    return await this.postsRepository.save(post);
   }
   
   public findAll(userId: string) {

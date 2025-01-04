@@ -1,3 +1,4 @@
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsEnum,
@@ -8,15 +9,16 @@ import {
   IsString,
   IsUrl,
   Matches,
-  MinLength,
   MaxLength,
+  Min,
+  MinLength,
   ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
-import { postStatus } from '../enums/post-status.enum';
-import { PostType } from "../enums/postType.enum";
+
 import { CreatePostMetaOptionsDto } from '../../meta-options/dtos/create-post-meta-options.dto';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
+import { PostType } from '../enums/postType.enum';
+import { postStatus } from '../enums/post-status.enum';
 
 export class CreatePostDto {
   @ApiProperty({
