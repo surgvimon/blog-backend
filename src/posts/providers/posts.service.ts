@@ -47,4 +47,12 @@ export class PostsService {
 
     return posts;
   }
+
+  public async delete(id: number) {
+    // Find the post from the database
+    await this.postsRepository.delete(id);
+
+    return { deleted: true, id };
+  }
+
 }
