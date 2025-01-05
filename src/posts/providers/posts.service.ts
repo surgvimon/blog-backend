@@ -5,6 +5,7 @@ import { Post } from '../post.entity';
 import { Repository } from 'typeorm';
 import { MetaOption } from 'src/meta-options/meta-options.entity';
 import { CreatePostDto } from '../dtos/create-post.dto';
+import { TagsService } from 'src/tags/providers/tags.service';
 
 @Injectable()
 export class PostsService {
@@ -25,6 +26,11 @@ export class PostsService {
      */
     @InjectRepository(MetaOption)
     private readonly metaOptionsRepository: Repository<MetaOption>,
+
+    /**
+     * Injecting Tags service
+     */
+    private readonly tagsService: TagsService,
   ) {}
 
   /**
@@ -33,10 +39,12 @@ export class PostsService {
   public async create(@Body() createPostDto: CreatePostDto) {
     let author = await this.usersService.findOneById(createPostDto.authorId);
 
+    let tags = await this.tagsService.findMultipleTags(createPostDto.tags);
     // Create the post
     let post = this.postsRepository.create({
       ...createPostDto,
       author: author,
+      tags: tags,
     });
 
     return await this.postsRepository.save(post);
@@ -47,6 +55,7 @@ export class PostsService {
     let posts = await this.postsRepository.find({
       relations: {
         metaOptions: true,
+        //author: true,
       },
     });
 
