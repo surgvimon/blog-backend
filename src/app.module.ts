@@ -15,6 +15,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { User } from './users/user.entity';
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
+import enviromentValidation from './config/enviroment.validation';
 
 // Get the current NODE_ENV
 const ENV = process.env.NODE_ENV;
@@ -29,6 +30,7 @@ const ENV = process.env.NODE_ENV;
       //envFilePath: ['.env.development', '.env'],
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
       load: [appConfig, databaseConfig],
+      validationSchema: enviromentValidation,
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
