@@ -4,6 +4,7 @@ import { User } from '../user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { ConfigService } from '@nestjs/config';
 /**
  * Controller class for '/users' API endpoint
  */
@@ -15,6 +16,12 @@ export class UsersService {
      * */
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    
+     /**
+     * Injecting Config service
+     * */
+
+     private readonly configService: ConfigService,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -44,6 +51,9 @@ export class UsersService {
     limt: number,
     page: number,
   ) {
+    const environment = this.configService.get<string>('S3_BUCKET');
+    console.log(environment);
+
     return [
       {
         firstName: 'John',
