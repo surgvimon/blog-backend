@@ -1,10 +1,13 @@
 import { GetUsersParamDto } from '../dtos/get-users-param.dto';
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { User } from '../user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from '../dtos/create-user.dto';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import { AuthService } from 'src/auth/providers/auth.service';
+import profileConfig from '../config/profile.config';
+
 /**
  * Controller class for '/users' API endpoint
  */
@@ -16,12 +19,14 @@ export class UsersService {
      * */
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-    
-     /**
-     * Injecting Config service
-     * */
 
-     private readonly configService: ConfigService,
+    // Injecting Auth Service
+    @Inject(forwardRef(() => AuthService))
+    private readonly authService: AuthService,
+
+    // Injecting ConfigService
+    @Inject(profileConfig.KEY)
+    private readonly profileConfiguration: ConfigType<typeof profileConfig>,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
@@ -51,9 +56,9 @@ export class UsersService {
     limt: number,
     page: number,
   ) {
-    const environment = this.configService.get<string>('S3_BUCKET');
-    console.log(environment);
-
+    // Testing profileConfiguration
+    console.log(this.profileConfiguration);
+    console.log(this.profileConfiguration.apiKey);
     return [
       {
         firstName: 'John',

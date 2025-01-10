@@ -13,7 +13,8 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
  * Importing Entities
  * */
 import { User } from './users/user.entity';
-import { appConfig } from './config/app.config';
+import appConfig from './config/app.config';
+import databaseConfig from './config/database.config';
 
 // Get the current NODE_ENV
 const ENV = process.env.NODE_ENV;
@@ -25,8 +26,9 @@ const ENV = process.env.NODE_ENV;
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      //envFilePath: ['.env.development', '.env'],
       envFilePath: !ENV ? '.env' : `.env.${ENV}`,
-      load: [appConfig],
+      load: [appConfig, databaseConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -34,12 +36,12 @@ const ENV = process.env.NODE_ENV;
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
         //entities: [User],
-        autoLoadEntities: configService.get('database.autoLoadEntities'),
         synchronize: configService.get('database.synchronize'),
-        port: +configService.get('database.port'),
+        port: configService.get('database.port'),
         username: configService.get('database.user'),
         password: configService.get('database.password'),
         host: configService.get('database.host'),
+        autoLoadEntities: configService.get('database.autoLoadEntities'),
         database: configService.get('database.name'),
       }),
     }),
