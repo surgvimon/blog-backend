@@ -7,15 +7,17 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import profileConfig from './config/profile.config';
 import { ConfigModule } from '@nestjs/config';
+import { UsersCreateManyProvider } from './providers/users-create-many.provider';
+import { CreateUserProvider } from './providers/create-user.provider';
 
 @Module({
   controllers: [UsersController],
-  providers: [UsersService],
+  providers: [UsersService, UsersCreateManyProvider, CreateUserProvider],
   exports: [UsersService],
   imports: [
     TypeOrmModule.forFeature([User]),
-    forwardRef(() => AuthModule),
     ConfigModule.forFeature(profileConfig),
+    forwardRef(() => AuthModule),
   ],
 })
 export class UsersModule {}

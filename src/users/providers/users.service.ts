@@ -7,6 +7,9 @@ import { CreateUserDto } from '../dtos/create-user.dto';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { AuthService } from 'src/auth/providers/auth.service';
 import profileConfig from '../config/profile.config';
+import { UsersCreateManyProvider } from './users-create-many.provider';
+import { CreateManyUsersDto } from '../dtos/create-many-users.dto';
+import { CreateUserProvider } from './create-user.provider';
 
 /**
  * Controller class for '/users' API endpoint
@@ -27,49 +30,20 @@ export class UsersService {
     // Injecting ConfigService
     @Inject(profileConfig.KEY)
     private readonly profileConfiguration: ConfigType<typeof profileConfig>,
+
+     /**
+     * Inject UsersCreateMany provider
+     */
+     private readonly usersCreateManyProvider: UsersCreateManyProvider,
+
+     /**
+      * Inject createUserProvider
+      */
+     private readonly createUserProvider: CreateUserProvider,
   ) {}
 
   public async createUser(createUserDto: CreateUserDto) {
-    let existingUser = undefined;
-
-    try{
-      // Check if user with email exists
-      existingUser = await this.usersRepository.findOne({
-        where: { email: createUserDto.email },
-      });
-    } catch (error) {
-      // Might save the details of the exception
-      // Information which is sensitive
-      throw new RequestTimeoutException(
-        "Unable to process your request at the moment please try later",
-        {
-          description: 'Error connecting to the database',
-        },
-      );
-    }
-    
-    //Handle exceptions 
-    if(existingUser){
-      throw new BadRequestException(
-        'The user already exists, please check your email.'
-      );
-    }
-
-    // create a new user
-    let newUser = this.usersRepository.create(createUserDto);
-
-    try {
-      newUser = await this.usersRepository.save(newUser);
-    } catch (error) {
-      throw new RequestTimeoutException(
-        "Unable to process your request at the moment please try later",
-        {
-          description: 'Error connecting to the database',
-        },
-      );
-    }
-    // Create the user
-    return newUser;
+    return this.createUserProvider.createUser(createUserDto);
   }
 
   /**
@@ -127,4 +101,10 @@ export class UsersService {
 
     return user;
   }
+
+  public async createMany(createManyUsersDto: CreateManyUsersDto) {
+    return await this.usersCreateManyProvider.createMany(createManyUsersDto);
+  }
+
+
 }
