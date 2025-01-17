@@ -15,7 +15,6 @@ import {
   ValidationPipe,
   UseGuards,
   SetMetadata,
-  Req,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { GetUsersParamDto } from './dtos/get-users-param.dto';
@@ -26,7 +25,6 @@ import { CreateManyUsersDto } from './dtos/create-many-users.dto';
 import { AccessTokenGuard } from 'src/auth/guards/access-token/access-token.guard';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { AuthType } from 'src/auth/enums/auth-type.enum';
-import { REQUEST_USER_KEY } from 'src/auth/constants/auth.constants';
 
 @Controller('users')
 @ApiTags('Users')
@@ -70,9 +68,8 @@ export class UsersController {
   @Post()
   //@SetMetadata('authType', 'none')
   @Auth( AuthType.None)
-  public createUsers(@Req() request/**@Body() createUserDto: CreateUserDto*/) {
-    console.log(request[REQUEST_USER_KEY]);
-    //return this.usersService.createUser(createUserDto); 
+  public createUsers(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.createUser(createUserDto); 
   }
 
   @Post('create-many')
